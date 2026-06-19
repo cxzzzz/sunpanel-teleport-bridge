@@ -20,9 +20,11 @@ services:
       TELEPORT_DATA_DIR: ${TELEPORT_DATA_DIR:-/var/lib/teleport}
       TELEPORT_CONFIG_PATH: ${TELEPORT_CONFIG_PATH:-/etc/teleport/sunpanel-apps.yaml}
       TELEPORT_MANAGED_BY: ${TELEPORT_MANAGED_BY:-sunpanel-teleport-bridge}
+      APP_OVERRIDES_PATH: ${APP_OVERRIDES_PATH:-/etc/sunpanel-teleport-bridge/overrides.yaml}
       SYNC_INTERVAL: ${SYNC_INTERVAL:-300s}
       DRY_RUN: ${DRY_RUN:-true}
       LOG_LEVEL: ${LOG_LEVEL:-info}
     volumes:
       - ${TELEPORT_DATA_VOLUME:-/opt/sunpanel-teleport-bridge/data}:/var/lib/teleport
       - ${TELEPORT_CONFIG_VOLUME:-/opt/sunpanel-teleport-bridge/config}:/etc/teleport
+      - ${BRIDGE_CONFIG_VOLUME:-/opt/sunpanel-teleport-bridge/bridge-config}:/etc/sunpanel-teleport-bridge:ro

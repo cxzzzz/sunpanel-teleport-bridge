@@ -51,6 +51,7 @@ class Config:
     teleport_app_use_any_proxy_public_addr: bool
     teleport_data_dir: Path
     teleport_config_path: Path
+    app_overrides_path: Path | None
     teleport_managed_by: str
     sync_interval: timedelta
     dry_run: bool
@@ -88,6 +89,9 @@ class Config:
                 _env("TELEPORT_CONFIG_PATH", "/etc/teleport/sunpanel-apps.yaml")
                 or "/etc/teleport/sunpanel-apps.yaml"
             ),
+            app_overrides_path=Path(_env("APP_OVERRIDES_PATH", "/etc/sunpanel-teleport-bridge/overrides.yaml"))
+            if _env("APP_OVERRIDES_PATH", "/etc/sunpanel-teleport-bridge/overrides.yaml")
+            else None,
             teleport_managed_by=_env("TELEPORT_MANAGED_BY", "sunpanel-teleport-bridge")
             or "sunpanel-teleport-bridge",
             sync_interval=parse_duration(_env("SYNC_INTERVAL", "300s") or "300s"),

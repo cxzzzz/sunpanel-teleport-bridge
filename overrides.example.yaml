@@ -1,0 +1,11 @@
+apps:
+  codeserver-pcwsl:
+    rewrite:
+      headers:
+        - "Host: code.example.com"
+        - "Origin: https://code.example.com"
+
+  pve:
+    labels:
+      env: homelab
+    insecure_skip_verify: true

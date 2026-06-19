@@ -29,6 +29,8 @@ TELEPORT_APP_USE_ANY_PROXY_PUBLIC_ADDR=true
 DRY_RUN=true
 TELEPORT_DATA_VOLUME=/opt/sunpanel-teleport-bridge/data
 TELEPORT_CONFIG_VOLUME=/opt/sunpanel-teleport-bridge/config
+BRIDGE_CONFIG_VOLUME=/opt/sunpanel-teleport-bridge/bridge-config
+APP_OVERRIDES_PATH=/etc/sunpanel-teleport-bridge/overrides.yaml
 ```
 
 Keep `DRY_RUN=true` until the generated plan looks correct.
@@ -107,6 +109,38 @@ This lets Teleport build app launch URLs from the public address used by the Web
 UI, while the agent still connects to `TELEPORT_PROXY` over the internal network.
 The compose file also uses `network_mode: host` to avoid Docker bridge subnets
 overlapping common home LAN ranges such as `192.168.100.0/24`.
+
+## App Overrides
+
+Most app configuration is generated from SunPanel. For app-specific Teleport
+settings, create an override file at:
+
+```text
+/opt/sunpanel-teleport-bridge/bridge-config/overrides.yaml
+```
+
+Example:
+
+```yaml
+apps:
+  codeserver-pcwsl:
+    rewrite:
+      headers:
+        - "Host: code.example.com"
+        - "Origin: https://code.example.com"
+
+  pve:
+    labels:
+      env: homelab
+    insecure_skip_verify: true
+```
+
+The keys under `apps` must match the generated Teleport app names. The bridge
+deep-merges each override into the generated Teleport app configuration. Mapping
+values are merged recursively, while lists and scalar values replace the
+generated values. The `name` field cannot be overridden because it is used as
+the match key. If an override file is changed, the bridge rewrites the Teleport
+config and restarts the Application Service on the next sync interval.
 
 When `DRY_RUN=false`, the bridge:
 

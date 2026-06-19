@@ -8,6 +8,7 @@ import yaml
 
 from .config import Config
 from .models import ManagedApp
+from .overrides import load_app_overrides, merge_app_overrides
 
 LOGGER = logging.getLogger(__name__)
 
@@ -20,6 +21,10 @@ class TeleportAgent:
     def render_config(self, apps: list[ManagedApp]) -> str:
         if not self.config.teleport_proxy:
             raise RuntimeError("TELEPORT_PROXY is required")
+
+        app_configs = [self._app_config(app) for app in apps]
+        overrides = load_app_overrides(self.config.app_overrides_path)
+        app_configs = merge_app_overrides(app_configs, overrides)
 
         teleport_config: dict[str, object] = {
             "version": "v3",
@@ -41,7 +46,7 @@ class TeleportAgent:
                 "enabled": "yes",
                 "debug_app": False,
                 "mcp_demo_server": False,
-                "apps": [self._app_config(app) for app in apps],
+                "apps": app_configs,
             },
         }
         if self.config.teleport_join_token:
