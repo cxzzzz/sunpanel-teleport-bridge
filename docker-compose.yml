@@ -1,6 +1,9 @@
 services:
   sunpanel-teleport-bridge:
-    build: .
+    build:
+      context: .
+      args:
+        BUILD_VERSION: ${BUILD_VERSION:-dev}
     network_mode: host
     restart: unless-stopped
     environment:

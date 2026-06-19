@@ -22,6 +22,7 @@ Set environment variables in Portainer:
 SUNPANEL_BASE_URL=http://192.168.100.106:3002
 SUNPANEL_USERNAME=replace-me
 SUNPANEL_PASSWORD=replace-me
+BUILD_VERSION=dev
 TELEPORT_PROXY=192.168.100.106:3080
 TELEPORT_JOIN_TOKEN=replace-me
 TELEPORT_INSECURE_SKIP_VERIFY=false
@@ -34,6 +35,11 @@ APP_OVERRIDES_PATH=/etc/sunpanel-teleport-bridge/overrides.yaml
 ```
 
 Keep `DRY_RUN=true` until the generated plan looks correct.
+
+If Portainer reuses an old image after `Pull & Redeploy`, change
+`BUILD_VERSION` to a new value such as `20250619-1`. The value is passed as a
+Docker build argument and written to `/build_info.txt`, which forces Docker to
+rebuild the application layers.
 
 ## Commands
 
